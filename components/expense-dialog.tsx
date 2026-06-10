@@ -13,12 +13,12 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { MoneyInput } from "@/components/ui/money-input"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select"
 import { useState, useTransition } from "react"
 import { Loader2 } from "lucide-react"
@@ -61,13 +61,9 @@ export function ExpenseDialog({
         <form onSubmit={onSubmit} className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <Label htmlFor="amount">Monto</Label>
-            <Input
+            <MoneyInput
               id="amount"
               name="amount"
-              type="number"
-              step="0.01"
-              min="0"
-              inputMode="decimal"
               placeholder="0"
               required
               autoFocus
@@ -80,8 +76,12 @@ export function ExpenseDialog({
           <div className="flex flex-col gap-2">
             <Label htmlFor="category">Categoría</Label>
             <Select value={categoryId} onValueChange={(v) => setCategoryId(v ?? NO_CATEGORY)}>
-              <SelectTrigger id="category">
-                <SelectValue placeholder="Sin categoría" />
+              <SelectTrigger id="category" className="w-full">
+                <span className={`flex flex-1 text-left text-sm ${categoryId === NO_CATEGORY ? "text-muted-foreground" : ""}`}>
+                  {categoryId === NO_CATEGORY
+                    ? "Sin categoría"
+                    : (categories.find((c) => String(c.id) === categoryId)?.name ?? "Sin categoría")}
+                </span>
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value={NO_CATEGORY}>Sin categoría</SelectItem>

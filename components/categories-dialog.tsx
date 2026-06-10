@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { MoneyInput } from "@/components/ui/money-input"
 import { ConfirmDialog } from "@/components/confirm-dialog"
 import { useState, useTransition } from "react"
 import { Check, Loader2, Pencil, Plus, Trash2, X } from "lucide-react"
@@ -119,12 +120,9 @@ export function CategoriesDialog({
                         onChange={(e) => setEditDraft((d) => ({ ...d, name: e.target.value }))}
                         placeholder="Nombre"
                       />
-                      <Input
-                        type="number"
-                        min="0"
-                        step="0.01"
+                      <MoneyInput
                         value={editDraft.budget}
-                        onChange={(e) => setEditDraft((d) => ({ ...d, budget: e.target.value }))}
+                        onChange={(raw) => setEditDraft((d) => ({ ...d, budget: raw }))}
                         placeholder="Presupuesto"
                       />
                       <div className="flex justify-end gap-2">
@@ -192,13 +190,10 @@ export function CategoriesDialog({
                 </div>
                 <div className="flex flex-col gap-2">
                   <Label htmlFor="new-cat-budget">Presupuesto</Label>
-                  <Input
+                  <MoneyInput
                     id="new-cat-budget"
-                    type="number"
-                    min="0"
-                    step="0.01"
                     value={draft.budget}
-                    onChange={(e) => setDraft((d) => ({ ...d, budget: e.target.value }))}
+                    onChange={(raw) => setDraft((d) => ({ ...d, budget: raw }))}
                     placeholder="0"
                   />
                 </div>

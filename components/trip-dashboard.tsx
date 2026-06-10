@@ -8,6 +8,7 @@ import { ExpenseDialog } from "@/components/expense-dialog"
 import { CategoriesDialog } from "@/components/categories-dialog"
 import { HistoryDialog } from "@/components/history-dialog"
 import { LogoutButton } from "@/components/logout-button"
+import { ThemeToggle } from "@/components/theme-toggle"
 import Link from "next/link"
 import { useMemo, useState } from "react"
 import {
@@ -58,69 +59,74 @@ export function TripDashboard({
   const pctSpent = totalBudget > 0 ? (spent / totalBudget) * 100 : 0
 
   return (
-    <main className="mx-auto min-h-screen w-full max-w-2xl px-4 pb-16">
-      <header className="flex items-center justify-between gap-3 py-6">
+    <main className="mx-auto min-h-screen w-full max-w-3xl px-3 pb-[max(5rem,env(safe-area-inset-bottom))] sm:px-4">
+      <header className="flex items-center justify-between gap-2 py-4 sm:gap-3 sm:py-5">
         <Link
           href="/"
-          className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm font-medium text-muted-foreground transition hover:text-foreground"
+          className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-sm font-medium text-muted-foreground transition hover:text-foreground"
         >
           <ArrowLeft className="h-4 w-4" />
           Viajes
         </Link>
-        <LogoutButton />
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <LogoutButton />
+        </div>
       </header>
 
       {/* Trip summary card */}
-      <Card className="mb-4 p-5">
-        <div className="flex items-start justify-between gap-4">
+      <Card className="mb-3 p-4 sm:mb-4 sm:p-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
           <div className="flex min-w-0 items-start gap-3">
-            <MapPin className="mt-1 h-5 w-5 shrink-0 text-primary" />
+            <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
             <div className="min-w-0">
-              <h1 className="text-xl font-bold leading-tight tracking-tight text-foreground text-balance">
+              <h1 className="text-base font-bold leading-snug tracking-tight text-foreground sm:text-xl text-balance">
                 {trip.name}
               </h1>
-              <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
-                <CalendarDays className="h-3.5 w-3.5" />
-                {formatDate(trip.startDate)} - {formatDate(trip.endDate)}
+              <p className="mt-1.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-muted-foreground sm:text-sm">
+                <CalendarDays className="h-3.5 w-3.5 shrink-0" />
+                <span className="whitespace-nowrap">{formatDate(trip.startDate)}</span>
+                <span aria-hidden>—</span>
+                <span className="whitespace-nowrap">{formatDate(trip.endDate)}</span>
               </p>
             </div>
           </div>
-          <div className="shrink-0 text-right">
-            <p className="text-xs text-muted-foreground">Presupuesto total</p>
-            <p className="text-2xl font-bold text-primary">{formatMoney(totalBudget, trip.currency)}</p>
+          <div className="flex items-center justify-between gap-3 border-t border-border pt-3 sm:block sm:shrink-0 sm:border-0 sm:pt-0 sm:text-right">
+            <p className="text-xs text-muted-foreground">Presupuesto</p>
+            <p className="text-lg font-bold text-primary sm:text-2xl">{formatMoney(totalBudget, trip.currency)}</p>
           </div>
         </div>
       </Card>
 
-      {/* Metrics */}
-      <div className="mb-4 grid gap-3">
-        <Card className="flex items-center justify-between p-5">
-          <div>
-            <p className="text-sm text-muted-foreground">Gastado</p>
-            <p className="text-2xl font-bold text-destructive">{formatMoney(spent, trip.currency)}</p>
+      {/* Metrics — 2+1 en mobile, 3 columnas en tablet+ */}
+      <div className="mb-3 grid grid-cols-2 gap-2 sm:mb-4 sm:grid-cols-3 sm:gap-3">
+        <Card className="flex flex-col items-center justify-center p-3 text-center sm:flex-row sm:items-center sm:justify-between sm:p-5 sm:text-left">
+          <div className="min-w-0">
+            <p className="text-xs text-muted-foreground sm:text-sm">Gastado</p>
+            <p className="text-base font-bold text-destructive sm:text-2xl">{formatMoney(spent, trip.currency)}</p>
           </div>
-          <TrendingDown className="h-6 w-6 text-destructive" />
+          <TrendingDown className="hidden h-6 w-6 shrink-0 text-destructive sm:block" />
         </Card>
 
-        <Card className="flex items-center justify-between p-5">
-          <div>
-            <p className="text-sm text-muted-foreground">Restante</p>
-            <p className={`text-2xl font-bold ${remaining < 0 ? "text-destructive" : "text-chart-3"}`}>
+        <Card className="flex flex-col items-center justify-center p-3 text-center sm:flex-row sm:items-center sm:justify-between sm:p-5 sm:text-left">
+          <div className="min-w-0">
+            <p className="text-xs text-muted-foreground sm:text-sm">Restante</p>
+            <p className={`text-base font-bold sm:text-2xl ${remaining < 0 ? "text-destructive" : "text-chart-3"}`}>
               {formatMoney(remaining, trip.currency)}
             </p>
           </div>
-          <Wallet className={`h-6 w-6 ${remaining < 0 ? "text-destructive" : "text-chart-3"}`} />
+          <Wallet className={`hidden h-6 w-6 shrink-0 sm:block ${remaining < 0 ? "text-destructive" : "text-chart-3"}`} />
         </Card>
 
-        <Card className="p-5">
+        <Card className="col-span-2 p-3 sm:col-span-1 sm:p-5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">% Gastado</p>
-              <p className="text-2xl font-bold text-foreground">{pctSpent.toFixed(1)}%</p>
+              <p className="text-xs text-muted-foreground sm:text-sm">% Gastado</p>
+              <p className="text-base font-bold text-foreground sm:text-2xl">{pctSpent.toFixed(1)}%</p>
             </div>
-            <PieChartIcon className="h-6 w-6 text-primary" />
+            <PieChartIcon className="hidden h-6 w-6 shrink-0 text-primary sm:block" />
           </div>
-          <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-secondary">
+          <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-secondary sm:mt-3">
             <div
               className="h-full rounded-full bg-gradient-to-r from-primary to-accent transition-all"
               style={{ width: `${Math.min(pctSpent, 100)}%` }}
@@ -130,28 +136,30 @@ export function TripDashboard({
       </div>
 
       {/* Actions */}
-      <div className="mb-6 flex flex-col gap-3">
+      <div className="mb-5 grid gap-2 sm:mb-6 sm:grid-cols-3 sm:gap-3">
         <button
           onClick={() => setExpenseOpen(true)}
-          className="flex h-14 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary to-accent text-base font-semibold text-primary-foreground shadow-sm transition hover:opacity-95"
+          className="flex h-12 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary to-accent text-sm font-semibold text-primary-foreground shadow-sm transition hover:opacity-95 sm:text-base"
         >
           <Plus className="h-5 w-5" />
           Agregar Gasto
         </button>
-        <button
-          onClick={() => setCategoriesOpen(true)}
-          className="flex h-12 items-center justify-center gap-2 rounded-xl border border-border bg-card font-medium text-foreground transition hover:bg-secondary"
-        >
-          <DollarSign className="h-5 w-5" />
-          Gestionar Categorías
-        </button>
-        <button
-          onClick={() => setHistoryOpen(true)}
-          className="flex h-12 items-center justify-center gap-2 rounded-xl border border-border bg-card font-medium text-foreground transition hover:bg-secondary"
-        >
-          <CalendarDays className="h-5 w-5" />
-          Ver Historial
-        </button>
+        <div className="grid grid-cols-2 gap-2 sm:contents">
+          <button
+            onClick={() => setCategoriesOpen(true)}
+            className="flex h-11 items-center justify-center gap-2 rounded-xl border border-border bg-card text-sm font-medium text-foreground transition hover:bg-secondary sm:h-12"
+          >
+            <DollarSign className="h-4 w-4 sm:h-5 sm:w-5" />
+            Categorías
+          </button>
+          <button
+            onClick={() => setHistoryOpen(true)}
+            className="flex h-11 items-center justify-center gap-2 rounded-xl border border-border bg-card text-sm font-medium text-foreground transition hover:bg-secondary sm:h-12"
+          >
+            <CalendarDays className="h-4 w-4 sm:h-5 sm:w-5" />
+            Historial
+          </button>
+        </div>
       </div>
 
       {/* Category status */}

@@ -28,11 +28,11 @@ export function TripsList({ trips }: { trips: Trip[] }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         <h2 className="text-base font-semibold text-foreground">Mis viajes</h2>
         <button
           onClick={() => setCreateOpen(true)}
-          className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-primary to-accent px-3 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-95"
+          className="flex shrink-0 items-center gap-1.5 rounded-lg bg-gradient-to-r from-primary to-accent px-3 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-95"
         >
           <Plus className="h-4 w-4" />
           Nuevo viaje
@@ -53,31 +53,33 @@ export function TripsList({ trips }: { trips: Trip[] }) {
         <div className="flex flex-col gap-3">
           {trips.map((trip) => (
             <Card key={trip.id} className="group p-0">
-              <div className="flex items-center justify-between gap-3 p-4">
-                <Link href={`/trips/${trip.id}`} className="flex min-w-0 flex-1 items-center gap-3">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <div className="flex gap-2 p-3 sm:gap-3 sm:p-4">
+                <Link href={`/trips/${trip.id}`} className="flex min-w-0 flex-1 items-start gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary sm:h-11 sm:w-11">
                     <MapPin className="h-5 w-5" />
                   </div>
-                  <div className="min-w-0">
-                    <p className="truncate font-semibold text-foreground">{trip.name}</p>
-                    <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                      <CalendarDays className="h-3.5 w-3.5" />
-                      {formatDate(trip.startDate)} - {formatDate(trip.endDate)}
+                  <div className="min-w-0 flex-1 py-0.5">
+                    <p className="font-semibold leading-snug text-foreground line-clamp-2">{trip.name}</p>
+                    <p className="mt-1 flex flex-wrap items-center gap-x-1 gap-y-0.5 text-xs text-muted-foreground sm:text-sm">
+                      <CalendarDays className="h-3.5 w-3.5 shrink-0" />
+                      <span className="whitespace-nowrap">{formatDate(trip.startDate)}</span>
+                      <span aria-hidden>—</span>
+                      <span className="whitespace-nowrap">{formatDate(trip.endDate)}</span>
                     </p>
                   </div>
                 </Link>
-                <div className="flex shrink-0 items-center gap-1">
+                <div className="flex shrink-0 items-center gap-1 self-start">
                   <button
                     onClick={() => setEditTrip(trip)}
                     aria-label="Editar viaje"
-                    className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-secondary hover:text-foreground"
+                    className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-secondary hover:text-foreground sm:h-9 sm:w-9"
                   >
                     <Pencil className="h-4 w-4" />
                   </button>
                   <button
                     onClick={() => setDeleteTarget(trip)}
                     aria-label="Eliminar viaje"
-                    className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-destructive/10 hover:text-destructive"
+                    className="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-destructive/10 hover:text-destructive sm:h-9 sm:w-9"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
