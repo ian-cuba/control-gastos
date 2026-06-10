@@ -100,28 +100,28 @@ export function HistoryDialog({
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="flex max-h-[90vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-lg">
+        <DialogContent className="flex max-h-[90vh] max-w-[calc(100%-1rem)] flex-col gap-0 overflow-hidden p-0 sm:max-w-lg">
           {/* Header fijo */}
-          <DialogHeader className="shrink-0 border-b border-border px-5 py-4">
+          <DialogHeader className="shrink-0 border-b border-border px-4 py-3.5 sm:px-5 sm:py-4">
             <DialogTitle className="text-base">Historial de gastos</DialogTitle>
           </DialogHeader>
 
           {/* Contenido scrollable */}
-          <div className="flex flex-col gap-4 overflow-y-auto px-5 py-4">
+          <div className="flex flex-col gap-4 overflow-y-auto px-4 py-4 sm:px-5">
 
             {/* Resumen */}
-            <div className="grid grid-cols-3 gap-2 rounded-xl bg-secondary/60 p-4">
-              <div className="flex flex-col items-center gap-0.5">
-                <p className="text-[11px] text-muted-foreground">Total</p>
-                <p className="text-sm font-bold text-foreground sm:text-base">{formatMoney(summary.total, currency)}</p>
+            <div className="grid grid-cols-3 gap-1.5 rounded-xl bg-secondary/60 p-3 sm:gap-2 sm:p-4">
+              <div className="flex min-w-0 flex-col items-center gap-0.5 px-1">
+                <p className="text-[10px] text-muted-foreground sm:text-[11px]">Total</p>
+                <p className="w-full truncate text-center text-xs font-bold text-foreground sm:text-base">{formatMoney(summary.total, currency)}</p>
               </div>
-              <div className="flex flex-col items-center gap-0.5 border-x border-border">
-                <p className="text-[11px] text-muted-foreground">Gastos</p>
-                <p className="text-sm font-bold text-foreground sm:text-base">{summary.count}</p>
+              <div className="flex min-w-0 flex-col items-center gap-0.5 border-x border-border px-1">
+                <p className="text-[10px] text-muted-foreground sm:text-[11px]">Gastos</p>
+                <p className="text-xs font-bold text-foreground sm:text-base">{summary.count}</p>
               </div>
-              <div className="flex flex-col items-center gap-0.5">
-                <p className="text-[11px] text-muted-foreground">Promedio</p>
-                <p className="text-sm font-bold text-foreground sm:text-base">{formatMoney(summary.avg, currency)}</p>
+              <div className="flex min-w-0 flex-col items-center gap-0.5 px-1">
+                <p className="text-[10px] text-muted-foreground sm:text-[11px]">Promedio</p>
+                <p className="w-full truncate text-center text-xs font-bold text-foreground sm:text-base">{formatMoney(summary.avg, currency)}</p>
               </div>
             </div>
 
@@ -249,20 +249,46 @@ export function HistoryDialog({
                             </div>
                           </div>
                         ) : (
-                          <div className="flex items-center gap-3 px-4 py-3">
-                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                              <Icon className="h-3.5 w-3.5" />
+                          <div className="flex items-start gap-3 px-3 py-3 sm:items-center sm:px-4">
+                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary sm:mt-0">
+                              <Icon className="h-4 w-4" />
                             </div>
                             <div className="min-w-0 flex-1">
-                              <p className="truncate text-sm font-medium text-foreground">
-                                {e.description || cat?.name || "Gasto"}
-                              </p>
-                              <p className="text-xs text-muted-foreground">
-                                {formatDate(e.expenseDate)}
-                                {cat ? ` · ${cat.name}` : ""}
-                              </p>
+                              {/* Fila 1: nombre + acciones (mobile) / nombre solo (desktop) */}
+                              <div className="flex items-center justify-between gap-2">
+                                <p className="min-w-0 flex-1 text-sm font-medium leading-snug text-foreground">
+                                  {e.description || cat?.name || "Gasto"}
+                                </p>
+                                <div className="flex shrink-0 items-center gap-0.5 sm:hidden">
+                                  <button
+                                    onClick={() => startEdit(e)}
+                                    aria-label="Editar gasto"
+                                    className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-secondary hover:text-foreground"
+                                  >
+                                    <Pencil className="h-4 w-4" />
+                                  </button>
+                                  <button
+                                    onClick={() => setDeleteTarget(e)}
+                                    aria-label="Eliminar gasto"
+                                    className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-destructive/10 hover:text-destructive"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </button>
+                                </div>
+                              </div>
+                              {/* Fila 2: monto + fecha/categoría (mobile) */}
+                              <div className="mt-1 flex items-center justify-between gap-2 sm:mt-0.5">
+                                <span className="shrink-0 text-sm font-semibold text-foreground sm:hidden">
+                                  {formatMoney(Number(e.amount), currency)}
+                                </span>
+                                <p className="text-right text-xs text-muted-foreground sm:text-left">
+                                  {formatDate(e.expenseDate)}
+                                  {cat ? ` · ${cat.name}` : ""}
+                                </p>
+                              </div>
                             </div>
-                            <div className="flex shrink-0 items-center gap-1">
+                            {/* Desktop: monto + acciones */}
+                            <div className="hidden shrink-0 items-center gap-1 sm:flex">
                               <span className="mr-1 text-sm font-semibold text-foreground">
                                 {formatMoney(Number(e.amount), currency)}
                               </span>
